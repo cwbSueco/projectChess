@@ -4,20 +4,20 @@ import boardgame.Board;
 import chess.ChessPiece;
 import chess.Color;
 
-public class King extends ChessPiece {
+public class Queen extends ChessPiece {
 
-	public King(Board board, Color color) {
+	public Queen(Board board, Color color) {
 		super(board, color);
 	}
 
 	@Override
 	public boolean[][] possibleMoves() {
-		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
-		return mat;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return "K";
+		return "Q";
 	}
 }
