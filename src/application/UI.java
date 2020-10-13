@@ -1,7 +1,12 @@
 package application;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+import chess.ChessException;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
@@ -31,11 +36,30 @@ public class UI {
 	public static ChessPosition readChessPosition(Scanner sc) {
 		try {
 			String str = sc.nextLine();
-			Character column = str.charAt(0);
-			Integer row = Integer.parseInt(str.substring(1));
+			char column = str.charAt(0);
+			int row = Integer.parseInt(str.substring(1));
 			return new ChessPosition(column, row);
-		} catch (RuntimeException e) {
-			throw new RuntimeException("Error reading ChessPosition. Valid values are from a1 to h8");
+		} catch (ChessException e) {
+			throw new ChessException("Error reading ChessPosition. Valid values are from a1 to h8");
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException("Error reading ChessPosition. Valid values are from a1 to h8");
+		}
+	}
+
+	public static void printMatch(ChessMatch chessMatch, List<ChessPiece> capturedPieces) {
+		printBoard(chessMatch.getPieces());
+		System.out.println();
+		printCapturedPieces(capturedPieces);
+		System.out.println();
+		System.out.println("Turn: " + chessMatch.getTurn());
+		if (!chessMatch.getCheckMate()) {
+			System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
+			if (chessMatch.getCheck()) {
+				System.out.println("CHECK!");
+			}
+		} else {
+			System.out.println("CHECKMATE!");
+			System.out.println("Winner: " + chessMatch.getCurrentPlayer());
 		}
 	}
 
@@ -73,6 +97,22 @@ public class UI {
 			System.out.print(ANSI_YELLOW + piece + ANSI_RESET);
 		}
 		System.out.print(" ");
+	}
+
+	private static void printCapturedPieces(List<ChessPiece> captured) {
+		List<ChessPiece> white = captured.stream().filter(x -> x.getColor() == Color.WHITE)
+				.collect(Collectors.toList());
+		List<ChessPiece> black = captured.stream().filter(x -> x.getColor() == Color.BLACK)
+				.collect(Collectors.toList());
+		System.out.println("Captured pieces:");
+		System.out.print("White: ");
+		System.out.print(ANSI_WHITE);
+		System.out.println(Arrays.toString(white.toArray()));
+		System.out.print(ANSI_RESET);
+		System.out.print("Black: ");
+		System.out.print(ANSI_YELLOW);
+		System.out.println(Arrays.toString(black.toArray()));
+		System.out.print(ANSI_RESET);
 	}
 
 	// https://stackoverflow.com/questions/2979383/java-clear-the-console
